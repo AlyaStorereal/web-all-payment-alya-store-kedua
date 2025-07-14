@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Gateway</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            animation: fadeIn 1s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .payment-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+        
+        .payment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .payment-card.active {
+            border: 1px solid #3a7bd5;
+            background: rgba(58, 123, 213, 0.1);
+        }
+        
+        .payment-logo {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            margin-bottom: 15px;
+        }
+        
+        .payment-name {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .payment-details {
+            display: none;
+            margin-top: 15px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .payment-card.active .payment-details {
+            display: block;
+        }
+        
+        .payment-number {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .copy-btn {
+            background: #3a7bd5;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .copy-btn:hover {
+            background: #2a6bc5;
+        }
+        
+        .qris-container {
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        .qris-image {
+            max-width: 200px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .rules {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .rules h2 {
+            margin-bottom: 15px;
+            color: #3a7bd5;
+        }
+        
+        .rules ul {
+            list-style-position: inside;
+            padding-left: 5px;
+        }
+        
+        .rules li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+        
+        .admin-contact {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .admin-contact a {
+            display: inline-block;
+            background: #25D366;
+            color: white;
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 500;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .admin-contact a:hover {
+            background: #128C7E;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(18, 140, 126, 0.3);
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            z-index: 1000;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        @media (max-width: 768px) {
+            .payment-methods {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ALYA STORE</h1>
+            <p class="subtitle">WEB ALL PAYMENT BY:ALYA STORE</p>
+        </header>
+        
+        <div class="payment-methods">
+            <div class="payment-card" onclick="selectPayment(this)">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_dana_blue.svg" alt="DANA" class="payment-logo">
+                <h3 class="payment-name">DANA</h3>
+                <div class="payment-details">
+                    <div class="payment-number">
+                        <span id="dana-number">083187656609</span>
+                        <button class="copy-btn" onclick="copyToClipboard('dana-number', event)">083187656609</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="payment-card" onclick="selectPayment(this)">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg" alt="GOPAY" class="payment-logo">
+                <h3 class="payment-name">GOPAY</h3>
+                <div class="payment-details">
+                    <div class="payment-number">
+                        <span id="gopay-number">083187656609</span>
+                        <button class="copy-btn" onclick="copyToClipboard('gopay-number', event)">Copy</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="payment-card" onclick="selectPayment(this)">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/e/eb/Logo_ovo_purple.svg" alt="OVO" class="payment-logo">
+                <h3 class="payment-name">OVO</h3>
+                <div class="payment-details">
+                    <div class="payment-number">
+                        <span id="ovo-number">tidak tersedia</span>
+                        <button class="copy-btn" onclick="copyToClipboard('ovo-number', event)">tidak tersedia</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="payment-card" onclick="selectPayment(this)">
+                <img src="https://qris.id/wp-content/uploads/2021/08/QRIS-Logo-Vertical-2.png" alt="QRIS" class="payment-logo">
+                <h3 class="payment-name">QRIS</h3>
+                <div class="payment-details">
+                    <div class="qris-container">
+                        <img src="QRIS ELU" alt="QR Code" class="qris-image">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="rules">
+            <h2>Payment Rules</h2>
+            <ul>
+                <li>Choose the payment method you want</li>
+                <li>Copy the payment number you want</li>
+                <li>Don't forget to screenshot the proof of transfer and send it to the admin</li>
+            </ul>
+        </div>
+        
+        <div class="admin-contact">
+            <h3>Admin Contact</h3>
+            <p>If you have made payment, please contact admin with proof of payment</p>
+            <a href="https://wa.me/6288708554015" target="_blank">Contact Admin</a>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">
+        Copied to clipboard!
+    </div>
+    
+    <audio id="bgMusic" autoplay loop>
+        <source src="https://files.catbox.moe/xv9mgg.mp3" type="audio/mpeg">
+    </audio>
+    
+    <script>
+        // Select payment method
+        function selectPayment(element) {
+            // Remove active class from all cards
+            document.querySelectorAll('.payment-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            
+            // Add active class to clicked card
+            element.classList.add('active');
+        }
+        
+        // Copy to clipboard function
+        function copyToClipboard(id, event) {
+            event.stopPropagation(); // Prevent triggering the card click event
+            
+            const element = document.getElementById(id);
+            const text = element.innerText;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification();
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        }
+        
+        // Show notification
+        function showNotification() {
+            const notification = document.getElementById('notification');
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 2000);
+        }
+        
+        // Autoplay music with user interaction
+        document.addEventListener('click', function() {
+            const audio = document.getElementById('bgMusic');
+            audio.play().catch(e => console.log("Autoplay prevented:", e));
+        }, { once: true });
+    </script>
+</body>
+                  </html>
